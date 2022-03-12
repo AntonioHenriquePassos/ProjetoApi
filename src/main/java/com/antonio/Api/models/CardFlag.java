@@ -1,5 +1,7 @@
 package com.antonio.Api.models;
 
+
+
 public enum CardFlag {
 	
 	MASTERCARD("Mastercard"),

@@ -1,24 +1,31 @@
 package com.antonio.Api.dtos;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.antonio.Api.models.Cards;
+
 
 public class BankAccountDto {
 	
-
+	@NotBlank
 	private String nameOwner;
 	
+	@NotBlank
 	private String agencyCode;
 	
+	@NotBlank
 	private String accountCode;
 	
+	@NotBlank
 	private String registerId;
 	
+	@NotBlank
 	private String verificationDigital;
 	
-	public List<Cards> cards = new ArrayList<>();
+	public List<@Valid CardsDto> cards = new ArrayList<>();
 
 	public String getNameOwner() {
 		return nameOwner;
@@ -60,11 +67,11 @@ public class BankAccountDto {
 		this.verificationDigital = verificationDigital;
 	}
 
-	public List<Cards> getCards() {
+	public List<CardsDto> getCards() {
 		return cards;
 	}
 
-	public void setCards(List<Cards> cards) {
+	public void setCards(List<CardsDto> cards) {
 		this.cards = cards;
 	}
 

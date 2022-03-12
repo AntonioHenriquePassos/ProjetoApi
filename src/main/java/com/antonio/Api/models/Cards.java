@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -27,50 +29,49 @@ public class Cards implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private UUID id; 
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id; 
 	
 	@Column
-	@NotBlank
 	@Enumerated(EnumType.STRING)
 	private CardName cardName;
 	
 	@Column
-	@NotBlank
 	@Enumerated(EnumType.STRING)
 	private CardFlag cardFlag;
 	
-	@Column (length=20)
-	@NotBlank
+	@Column (length=20, unique=true)
 	private String cardNumber;
 	
 	@Column(length=5)
-	@NotBlank
 	private String cardSecurityCode;
 	
 	@Column(length=20)
-	@NotBlank
 	private Double cardLimit;
 	
 	
-	@OneToOne(mappedBy="card")
-	public CardType cardType;
+	@ManyToOne( cascade=CascadeType.PERSIST)
+	@JsonBackReference
+	@JoinColumn(name="Card_Type_Id")
+	private CardType cardType;
 	
-	@ManyToOne
+	private Type type;
+	
+	 
+	
+	@ManyToOne( cascade=CascadeType.PERSIST)
 	@JoinColumn(name="Bank_Account_Id")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private BankAccount bankAccount;
 	
-	public UUID getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	
-	
-	public String getCardName() {
+		public CardName getCardName() {
 		return cardName;
 	}
-	public String getCardFlag() {
+	public CardFlag getCardFlag() {
 		return cardFlag;
 	}
 	public String getCardNumber() {
@@ -82,10 +83,10 @@ public class Cards implements Serializable {
 	public Double getCardLimit() {
 		return cardLimit;
 	}
-	public void setCardName(String cardName) {
+	public void setCardName( CardName cardName) {
 		this.cardName = cardName;
 	}
-	public void setCardFlag(String cardFlag) {
+	public void setCardFlag( CardFlag cardFlag) {
 		this.cardFlag = cardFlag;
 	}
 	public void setCardNumber(String cardNumber) {
@@ -97,9 +98,41 @@ public class Cards implements Serializable {
 	public void setCardLimit(Double cardLimit) {
 		this.cardLimit = cardLimit;
 	}
+
+
 	public CardType getCardType() {
 		return cardType;
 	}
+
+
+	public void setCardType(CardType cardType) {
+		this.cardType = cardType;
+	}
+
+
+	public BankAccount getBankAccount() {
+		return bankAccount;
+	}
+
+
+	public void setBankAccount(BankAccount bankAccount) {
+		this.bankAccount = bankAccount;
+	}
+
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
 	
 	
 	

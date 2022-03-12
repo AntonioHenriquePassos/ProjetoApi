@@ -2,10 +2,10 @@ package com.antonio.Api.models;
 
 public enum Type {
 
-	DEBIT_CARD ("Debit Card"), 
-	CREDIT_CARD ("Credit Card"), 
-	MEAL_CARD ("Meal Card"), 
-	GIFT_CARD ("Gift Card");
+	DEBIT_CARD ("DEBIT"), 
+	CREDIT_CARD ("CREDIT"), 
+	MEAL_CARD ("MEAL"), 
+	GIFT_CARD ("GIFT");
 	
 	public String description;
 	

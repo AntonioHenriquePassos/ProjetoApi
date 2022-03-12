@@ -1,5 +1,6 @@
 package com.antonio.Api.models;
 
+
 public enum CardName {
 
 	VIP("VIP"),
