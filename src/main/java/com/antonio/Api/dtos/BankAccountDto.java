@@ -2,6 +2,7 @@ package com.antonio.Api.dtos;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +11,24 @@ import java.util.List;
 
 public class BankAccountDto {
 	
-	@NotBlank
+	@NotBlank(message="Name Owner = Filling nameOwner field out is mandatory")
+	@Size(max=50, message="Name Owner = Please, type up to a maximum of 50 characters.")
 	private String nameOwner;
 	
-	@NotBlank
+	@NotBlank(message="Agency Code = Filling agencyCode field out is mandatory")
+	@Size(max=4, message="Agency Code = Please, type up to a maximum of 4 characters.")
 	private String agencyCode;
 	
-	@NotBlank
+	@NotBlank(message="Account Code = Filling accountCode field out is mandatory")
+	@Size(max=8, message="Account Code = Please, type up to a maximum of 8 characters.")
 	private String accountCode;
 	
-	@NotBlank
+	@NotBlank(message="Register Id = Filling registerId field out is mandatory")
+	@Size(max=20, message="Register Id = Please, type up to a maximum of 20 characters.")
 	private String registerId;
 	
-	@NotBlank
+	@NotBlank(message="Verification Digital = Filling verificationDigital field out is mandatory")
+	@Size(max=1, message="Verification Digital = Please, type only 1 character.")
 	private String verificationDigital;
 	
 	public List<@Valid CardsDto> cards = new ArrayList<>();

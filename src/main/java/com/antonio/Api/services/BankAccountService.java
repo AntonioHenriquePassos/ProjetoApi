@@ -1,15 +1,10 @@
 package com.antonio.Api.services;
 
-import java.awt.print.Pageable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.antonio.Api.dtos.BankAccountDto;
@@ -21,7 +16,9 @@ import com.antonio.Api.models.Cards;
 import com.antonio.Api.repositories.BankAccountRepository;
 import com.antonio.Api.repositories.CardTypeRepository;
 import com.antonio.Api.repositories.CardsRepository;
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
+import com.antonio.Api.services.exceptions.BankAccountNotFoundException;
+import com.antonio.Api.services.exceptions.CardNotFoundException;
+import com.antonio.Api.services.exceptions.CardTypeNotFoundException;
 
 @Service
 public class BankAccountService {
@@ -83,23 +80,28 @@ public class BankAccountService {
 		return bankAccountRepository.findAll();
 	}
 	
-	public Optional<Cards> findCardById(Long id){
-		return cardsRepository.findById(id);
+	public Cards findCardById(Long id){
+		return cardsRepository.findById(id).orElseThrow(
+				()-> new CardNotFoundException("Id not found, id: " + id));
 	}
 
-	public Optional<BankAccount> findBankAccountId(Long id) {
-		return bankAccountRepository.findById(id);
+	public BankAccount findBankAccountId(Long id) {
+		return bankAccountRepository.findById(id).orElseThrow(
+				() -> new BankAccountNotFoundException("Id not found, id: " + id));
 	}
 	
-	public Optional<CardType> findCardTypeId(Integer id) {
-		return cardTypeRepository.findById(id);
+	public CardType findCardTypeId(Integer id) {
+		return cardTypeRepository.findById(id).orElseThrow(
+				()-> new CardTypeNotFoundException("Id not found, id: " + id));
+				
 	}
 	
 	
 	
 	@Transactional
-	public void deleteCard(Cards card) {
+	public String deleteCard(Cards card) {
 		cardsRepository.delete(card);
+		return "Card deleted successfully.";
 	}
 	
 	
@@ -111,10 +113,7 @@ public class BankAccountService {
 	 
 	@Transactional
 	public BankAccount AddCardToBankAccount(CardsDto dtoCard, Long id ) {
-		Optional <BankAccount>bankAccountOptional = findBankAccountId(id);
-		
-		BankAccount bankAccount  = new BankAccount();
-		bankAccount = bankAccountOptional.get();
+		BankAccount bankAccount = bankAccountRepository.findById(id).get();
 		Cards newCard = new Cards();
 		newCard.setCardFlag(dtoCard.getCardFlag());
 		newCard.setCardLimit(dtoCard.getCardLimit());

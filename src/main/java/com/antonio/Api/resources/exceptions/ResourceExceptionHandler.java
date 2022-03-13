@@ -1,0 +1,77 @@
+package com.antonio.Api.resources.exceptions;
+
+import java.time.Instant;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.antonio.Api.services.exceptions.BankAccountNotFoundException;
+import com.antonio.Api.services.exceptions.CardNotFoundException;
+import com.antonio.Api.services.exceptions.CardTypeNotFoundException;
+
+@ControllerAdvice
+public class ResourceExceptionHandler {
+	
+	@ExceptionHandler(BankAccountNotFoundException.class)
+	public ResponseEntity<StandardError> BankAccountNotFound (BankAccountNotFoundException e, 
+	HttpServletRequest request ){
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.NOT_FOUND.value());
+		err.setError("Resource not found");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+		
+		
+	}
+
+	@ExceptionHandler(CardNotFoundException.class)
+	public ResponseEntity<StandardError> CardNotFound (CardNotFoundException e, 
+	HttpServletRequest request ){
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.NOT_FOUND.value());
+		err.setError("Resource not found");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+		
+		
+	}
+	
+	@ExceptionHandler(CardTypeNotFoundException.class)
+	public ResponseEntity<StandardError> CardTypeNotFound(CardTypeNotFoundException e, 
+	HttpServletRequest request ){
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.NOT_FOUND.value());
+		err.setError("Resource not found");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+		
+		
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<StandardError> MethodArgumentNotValidException (MethodArgumentNotValidException e, 
+	HttpServletRequest request ){
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
+		err.setError("Constraint Exception");
+		err.setPath(request.getRequestURI());
+		err.setMessage(e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+		
+		
+	}
+	
+	
+}

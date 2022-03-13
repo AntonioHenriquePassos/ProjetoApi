@@ -1,35 +1,42 @@
 package com.antonio.Api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.antonio.Api.models.CardFlag;
 import com.antonio.Api.models.CardName;
-import com.antonio.Api.models.Type;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class CardsDto {
 	
-	@NotNull
+	@NotNull(message="Card Name = Filling cardName field out is mandatory")
 	@Enumerated(EnumType.STRING)
 	private CardName cardName;
 	
-	@NotNull
+	@NotNull(message="Card Flag = Filling cardFlag field out is mandatory")
 	@Enumerated(EnumType.STRING)
 	private CardFlag cardFlag;
 	
-	@NotBlank
+	@NotBlank(message="Card Number = Filling cardNumber field out is mandatory")
+	@Size(max=20, message="Card Number = Please, type up to a maximum of 20 characters.")
 	private String cardNumber;
 	
-	@NotBlank (message = "Campo não pode ser nulo ou vazio.")
+	@NotBlank (message="Card SecurityCode = Filling cardSecurityCode field out is mandatory")
+	@Size(max=5, message="Card SecurityCode = Please, type up to a maximum of 5 characters.")
 	private String cardSecurityCode;
 	
-	@NotNull
-	private Double cardLimit;
+	@NotNull(message="Card Limit = Filling cardLimit field out is mandatory")
+	@DecimalMax(value = "9999.99999999999999", message = "Card Limit = Please, type up to a maximum of 20 characters.")
+	private BigDecimal cardLimit;
 	
-	@NotNull
+	@NotNull(message="Id of Card Type = Filling idtype field out is mandatory")
+	@Max(value=1, message="Id of Card Type = Please, type only 1 character.")
 	private Integer idtype; //Id of the CardType object, e.g: GIFT_CARD = 1.
 	
 		
@@ -65,11 +72,11 @@ public class CardsDto {
 		this.cardSecurityCode = cardSecurityCode;
 	}
 
-	public Double getCardLimit() {
+	public BigDecimal getCardLimit() {
 		return cardLimit;
 	}
 
-	public void setCardLimit(Double cardLimit) {
+	public void setCardLimit(BigDecimal cardLimit) {
 		this.cardLimit = cardLimit;
 	}
 	

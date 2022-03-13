@@ -1,23 +1,19 @@
 package com.antonio.Api.models;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
+import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,7 +43,7 @@ public class Cards implements Serializable {
 	private String cardSecurityCode;
 	
 	@Column(length=20)
-	private Double cardLimit;
+	private BigDecimal cardLimit;
 	
 	
 	@ManyToOne( cascade=CascadeType.PERSIST)
@@ -80,7 +76,7 @@ public class Cards implements Serializable {
 	public String getCardSecurityCode() {
 		return cardSecurityCode;
 	}
-	public Double getCardLimit() {
+	public BigDecimal getCardLimit() {
 		return cardLimit;
 	}
 	public void setCardName( CardName cardName) {
@@ -95,7 +91,7 @@ public class Cards implements Serializable {
 	public void setCardSecurityCode(String cardSecurityCode) {
 		this.cardSecurityCode = cardSecurityCode;
 	}
-	public void setCardLimit(Double cardLimit) {
+	public void setCardLimit(BigDecimal cardLimit) {
 		this.cardLimit = cardLimit;
 	}
 

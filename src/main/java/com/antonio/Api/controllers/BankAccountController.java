@@ -67,11 +67,8 @@ public class BankAccountController {
 	
 	@GetMapping("/bankAccountId/{id}")
 	public ResponseEntity<Object> findAccountById(@PathVariable(value = "id") Long id){
-		Optional<BankAccount> bankAccountOptional = bankAccountService.findBankAccountId(id);
-		if (!bankAccountOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bank Account not found.");
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(bankAccountOptional.get());
+		BankAccount bankAccount= bankAccountService.findBankAccountId(id);
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccount);
 
 	}
 	@GetMapping
@@ -81,56 +78,39 @@ public class BankAccountController {
 	
 	@GetMapping("/cardtype/{id}")
 	public ResponseEntity<Object> getCardTypeById(@PathVariable(value = "id") Integer id){
-		Optional<CardType> cardTypeOptional = bankAccountService.findCardTypeId(id);
-		if (!cardTypeOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Card type not found.");
-
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(cardTypeOptional.get());
+		CardType cardType= bankAccountService.findCardTypeId(id);
+		return ResponseEntity.status(HttpStatus.OK).body(cardType);
 	}
 	
 		
 	@DeleteMapping("/cardId/{id}")
 	public ResponseEntity<Object> deleteCardId(@PathVariable(value="id")Long id){
-		Optional <Cards> cardOptional= bankAccountService.findCardById(id);
-		if(cardOptional.isPresent()) {
-		Cards card = cardOptional.get();
-		bankAccountService.deleteCard(card);
-        return ResponseEntity.status(HttpStatus.OK).body("Card deleted successfully.");
-	} else {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Card not found");
+		Cards card = bankAccountService.findCardById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.deleteCard(card));
 	}
-		
-	}
+
 	
 	
 	@DeleteMapping("/bankAccountId/{id}")
 	public ResponseEntity<Object> deleteBankAccountId(@PathVariable(value="id") Long id){
-		Optional <BankAccount> bankAccountOptional = bankAccountService.findBankAccountId(id);
-		if (bankAccountOptional.isPresent()) {
-			if (bankAccountOptional.get().getCards().isEmpty()) {
-				bankAccountService.deleteBankAccountId(id);
-		        return ResponseEntity.status(HttpStatus.OK).body("Bank Account deleted successfully.");
-			} else {			
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot delete bank account containing cards.");
-			}
-	
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bank Account not found");
+		BankAccount bankAccount = bankAccountService.findBankAccountId(id);
+		if (bankAccount.getCards().isEmpty()) {
+			bankAccountService.deleteBankAccountId(id);
+	        return ResponseEntity.status(HttpStatus.OK).body("Bank Account deleted successfully.");
+		} else {			
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot delete bank account containing cards.");
 		}
-	}
+
+	} 
+	
 	
 	@PutMapping("/addCard/{id}")
 	public ResponseEntity<Object> AddCardToBankAccount(@PathVariable (value="id") Long id, 
 		@RequestBody @Valid CardsDto dtoCard){
-		Optional <BankAccount> bankAccountOptional = bankAccountService.findBankAccountId(id);
-		if (!bankAccountOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bank account not found.");
-	} else {
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
-        AddCardToBankAccount(dtoCard, id));
+		BankAccount bankAccount = bankAccountService.findBankAccountId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.AddCardToBankAccount(dtoCard, id));
 	}
-	}
+	
 	
 		
 
