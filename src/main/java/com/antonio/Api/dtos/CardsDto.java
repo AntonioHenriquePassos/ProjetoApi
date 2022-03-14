@@ -15,28 +15,28 @@ import com.antonio.Api.models.CardName;
 
 public class CardsDto {
 	
-	@NotNull(message="Card Name = Filling cardName field out is mandatory")
+	@NotNull(message="Description: Card Name = Filling cardName field out is mandatory.")
 	@Enumerated(EnumType.STRING)
 	private CardName cardName;
 	
-	@NotNull(message="Card Flag = Filling cardFlag field out is mandatory")
+	@NotNull(message="Description: Card Flag = Filling cardFlag field out is mandatory.")
 	@Enumerated(EnumType.STRING)
 	private CardFlag cardFlag;
 	
-	@NotBlank(message="Card Number = Filling cardNumber field out is mandatory")
-	@Size(max=20, message="Card Number = Please, type up to a maximum of 20 characters.")
+	@NotBlank(message="Description: Card Number = Filling cardNumber field out is mandatory.")
+	@Size(max=20, message="Description: Card Number = Please, type up to a maximum of 20 characters.")
 	private String cardNumber;
 	
-	@NotBlank (message="Card SecurityCode = Filling cardSecurityCode field out is mandatory")
-	@Size(max=5, message="Card SecurityCode = Please, type up to a maximum of 5 characters.")
+	@NotBlank (message="Description: Card SecurityCode = Filling cardSecurityCode field out is mandatory.")
+	@Size(max=5, message="Description: Card SecurityCode = Please, type up to a maximum of 5 characters.")
 	private String cardSecurityCode;
 	
-	@NotNull(message="Card Limit = Filling cardLimit field out is mandatory")
-	@DecimalMax(value = "9999.99999999999999", message = "Card Limit = Please, type up to a maximum of 20 characters.")
+	@NotNull(message="Description: Card Limit = Filling cardLimit field out is mandatory.")
+	@DecimalMax(value = "9999.99999999999999", message = "Description: Card Limit = Please, type up to a maximum of 20 characters.")
 	private BigDecimal cardLimit;
 	
-	@NotNull(message="Id of Card Type = Filling idtype field out is mandatory")
-	@Max(value=1, message="Id of Card Type = Please, type only 1 character.")
+	@NotNull(message="Description: Id of Card Type = Filling idtype field out is mandatory.")
+	@Max(value=1, message="Description: Id of Card Type = Please, type only 1 character.")
 	private Integer idtype; //Id of the CardType object, e.g: GIFT_CARD = 1.
 	
 		

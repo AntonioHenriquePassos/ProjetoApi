@@ -107,7 +107,7 @@ public class BankAccountController {
 	@PutMapping("/addCard/{id}")
 	public ResponseEntity<Object> AddCardToBankAccount(@PathVariable (value="id") Long id, 
 		@RequestBody @Valid CardsDto dtoCard){
-		BankAccount bankAccount = bankAccountService.findBankAccountId(id);
+		BankAccount bankAccount = bankAccountService.findBankAccountId(id);//Var criada somente para chamar o metodo findBankAccountId
         return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.AddCardToBankAccount(dtoCard, id));
 	}
 	

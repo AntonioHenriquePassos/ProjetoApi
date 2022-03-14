@@ -1,9 +1,11 @@
 package com.antonio.Api.resources.exceptions;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -67,11 +69,50 @@ public class ResourceExceptionHandler {
 		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setError("Constraint Exception");
 		err.setPath(request.getRequestURI());
-		err.setMessage(e.getMessage());
+		int index = e.getMessage().indexOf("Description:");
+		int indexEnd = e.getMessage().lastIndexOf(".");
+		err.setMessage(e.getMessage().substring(index, indexEnd+1));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-		
 		
 	}
 	
+
+	
+	@ExceptionHandler({DataIntegrityViolationException.class})
+    protected ResponseEntity<Object> handlePersistenceException(final DataIntegrityViolationException e, HttpServletRequest request) {
+
+        Throwable cause = e.getRootCause();
+
+        if (cause instanceof SQLIntegrityConstraintViolationException) {
+
+            SQLIntegrityConstraintViolationException constraintException = (SQLIntegrityConstraintViolationException) cause;
+
+            StandardError err = new StandardError();
+    		err.setTimestamp(Instant.now());
+    		err.setStatus(HttpStatus.CONFLICT.value());
+    		err.setError("Conflict Exception");
+    		err.setPath(request.getRequestURI());
+    		err.setMessage(constraintException.getLocalizedMessage());
+    		return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
+
+               
+        }
+
+        StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+		err.setError("Not Acceptable Exception");
+		err.setPath(request.getRequestURI());
+		err.setMessage(e.getLocalizedMessage());
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(err);
+	
+
+    }
+
+
+
+
+
+
 	
 }
