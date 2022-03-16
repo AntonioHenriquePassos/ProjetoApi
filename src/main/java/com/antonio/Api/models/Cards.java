@@ -51,6 +51,7 @@ public class Cards implements Serializable {
 	@JoinColumn(name="Card_Type_Id")
 	private CardType cardType;
 	
+	//In SQL, the field "type" shows the number of the respective ENUM type.
 	private Type type;
 	
 	 

@@ -29,7 +29,7 @@ public class CardType implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id; 
 	
-
+	@Column (unique=true)
 	@Enumerated(EnumType.STRING)
 	private Type typeOfCard;
 

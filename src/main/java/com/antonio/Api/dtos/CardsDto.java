@@ -32,11 +32,11 @@ public class CardsDto {
 	private String cardSecurityCode;
 	
 	@NotNull(message="Description: Card Limit = Filling cardLimit field out is mandatory.")
-	@DecimalMax(value = "9999.99999999999999", message = "Description: Card Limit = Please, type up to a maximum of 20 characters.")
+	@DecimalMax(value = "99999999999999999999", message = "Description: Card Limit = Please, type up to a maximum of 20 characters.")
 	private BigDecimal cardLimit;
 	
 	@NotNull(message="Description: Id of Card Type = Filling idtype field out is mandatory.")
-	@Max(value=1, message="Description: Id of Card Type = Please, type only 1 character.")
+	@Max(value=6 , message="Description: Id of Card Type = Please, type only 1 character.")
 	private Integer idtype; //Id of the CardType object, e.g: GIFT_CARD = 1.
 	
 		
@@ -80,7 +80,7 @@ public class CardsDto {
 		this.cardLimit = cardLimit;
 	}
 	
-	public Integer getidetype() {
+	public Integer getidtype() {
 		return idtype;
 	}
 	

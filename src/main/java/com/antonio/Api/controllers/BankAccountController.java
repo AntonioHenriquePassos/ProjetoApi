@@ -52,7 +52,7 @@ public class BankAccountController {
 	
 		
 	@PostMapping
-	public ResponseEntity<Object> createAccount(@RequestBody @Valid BankAccountDto dto){
+	public ResponseEntity<Object> createBankAccount(@RequestBody @Valid BankAccountDto dto){
 		BankAccount newBankAccount = new BankAccount();
 		newBankAccount = bankAccountService.createBankAccount(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(newBankAccount);
@@ -63,27 +63,62 @@ public class BankAccountController {
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.createCardType(cardTypeDto));
 
 	}
+	//The below "id" references the Bank Account to which a new card will be added.
+	@PostMapping("/card/{id}")
+	public ResponseEntity<Object> createCard(@PathVariable (value="id") Long id, 
+		@RequestBody @Valid CardsDto dtoCard){
+		BankAccount bankAccountFound = bankAccountService.findBankAccountId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.AddCardToBankAccount(dtoCard, bankAccountFound));
+	}
 	
+	@GetMapping
+	public List<BankAccount> listAllBankAccountsWithCards(){
+		return bankAccountService.findAll();
+	}
 	
-	@GetMapping("/bankAccountId/{id}")
+	@GetMapping("/bankAccount/{id}")
 	public ResponseEntity<Object> findAccountById(@PathVariable(value = "id") Long id){
 		BankAccount bankAccount= bankAccountService.findBankAccountId(id);
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccount);
 
 	}
-	@GetMapping
-	public List<BankAccount> listAllAccounts(){
-		return bankAccountService.findAll();
-	}
+	
 	
 	@GetMapping("/cardtype/{id}")
-	public ResponseEntity<Object> getCardTypeById(@PathVariable(value = "id") Integer id){
+	public ResponseEntity<Object> findCardTypeById(@PathVariable(value = "id") Integer id){
 		CardType cardType= bankAccountService.findCardTypeId(id);
 		return ResponseEntity.status(HttpStatus.OK).body(cardType);
 	}
 	
+	
+	//Update only bank account data, cards are updated in their proper function.
+	@PutMapping("/updateBankAccount/{id}")
+	public ResponseEntity<Object> updateBankAccount(@PathVariable(value="id")Long id,
+	@RequestBody @Valid BankAccountDto bankAccountDto){
+		BankAccount BankAccountFound = bankAccountService.findBankAccountId(id);
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
+				updateBankAccount(BankAccountFound, bankAccountDto));
 		
-	@DeleteMapping("/cardId/{id}")
+	}
+	
+	
+	@PutMapping("/updateCard/{id}")
+	public ResponseEntity<Object> updateCard(@PathVariable(value="id") Long id, 
+		@RequestBody @Valid CardsDto cardDto ){
+		Cards cardFound = bankAccountService.findCardById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
+				updateCard(cardFound, cardDto));
+	}
+//	//Must be used only in case of creation of ENUM "Type" which will replace an existing one.
+//	@PutMapping("/updateCardType/{id}")
+//	public ResponseEntity<Object> updateCardType(@PathVariable(value="id") Integer id, 
+//		@RequestBody @Valid CardTypeDto cardTypeDto ){
+//		CardType cardTypeFound = bankAccountService.findCardTypeId(id);
+//		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
+//				updateCardType(cardTypeFound, cardTypeDto));
+//	}
+		
+	@DeleteMapping("/deleteCard/{id}")
 	public ResponseEntity<Object> deleteCardId(@PathVariable(value="id")Long id){
 		Cards card = bankAccountService.findCardById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.deleteCard(card));
@@ -91,30 +126,30 @@ public class BankAccountController {
 
 	
 	
-	@DeleteMapping("/bankAccountId/{id}")
+	@DeleteMapping("/deleteBankAccount/{id}")
 	public ResponseEntity<Object> deleteBankAccountId(@PathVariable(value="id") Long id){
-		BankAccount bankAccount = bankAccountService.findBankAccountId(id);
-		if (bankAccount.getCards().isEmpty()) {
+		BankAccount bankAccountFound = bankAccountService.findBankAccountId(id);
+		if (bankAccountFound.getCards().isEmpty()) {
 			bankAccountService.deleteBankAccountId(id);
 	        return ResponseEntity.status(HttpStatus.OK).body("Bank Account deleted successfully.");
 		} else {			
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot delete bank account containing cards.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, cannot delete bank account with cards in it.");
 		}
-
+		
 	} 
 	
-	
-	@PutMapping("/addCard/{id}")
-	public ResponseEntity<Object> AddCardToBankAccount(@PathVariable (value="id") Long id, 
-		@RequestBody @Valid CardsDto dtoCard){
-		BankAccount bankAccount = bankAccountService.findBankAccountId(id);//Var criada somente para chamar o metodo findBankAccountId
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.AddCardToBankAccount(dtoCard, id));
+	@DeleteMapping("/deleteCardType/{id}")
+	public ResponseEntity<Object> deleteCardTypeId(@PathVariable(value="id") Integer id){
+		CardType cardTypeFound = bankAccountService.findCardTypeId(id);
+		if (cardTypeFound.getCard().isEmpty()) {
+			bankAccountService.deleteCardTypeId(id);
+	        return ResponseEntity.status(HttpStatus.OK).body("Card type deleted successfully.");
+		} else {			
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, cannot delete card type with cards in it.");
+		}
+		
 	}
-	
-	
-		
 
-		
-		
+
 
 }
