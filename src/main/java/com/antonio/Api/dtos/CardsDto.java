@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 
 import com.antonio.Api.models.CardFlag;
 import com.antonio.Api.models.CardName;
+import com.antonio.Api.models.Type;
 
 public class CardsDto {
 	
@@ -36,8 +37,7 @@ public class CardsDto {
 	private BigDecimal cardLimit;
 	
 	@NotNull(message="Description: Id of Card Type = Filling idtype field out is mandatory.")
-	@Max(value=6 , message="Description: Id of Card Type = Please, type only 1 character.")
-	private Integer idtype; //Id of the CardType object, e.g: GIFT_CARD = 1.
+	private Type type; 
 	
 		
 	public CardName getCardName() {
@@ -80,14 +80,34 @@ public class CardsDto {
 		this.cardLimit = cardLimit;
 	}
 	
-	public Integer getidtype() {
-		return idtype;
-	}
-	
-	public void setidtype(Integer idtype) {
-		this.idtype = idtype;
+	public Type getType() {
+		return type;
 	}
 
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+
+	public CardsDto(
+			@NotNull(message = "Description: Card Name = Filling cardName field out is mandatory.") CardName cardName,
+			@NotNull(message = "Description: Card Flag = Filling cardFlag field out is mandatory.") CardFlag cardFlag,
+			@NotBlank(message = "Description: Card Number = Filling cardNumber field out is mandatory.") @Size(max = 20, message = "Description: Card Number = Please, type up to a maximum of 20 characters.") String cardNumber,
+			@NotBlank(message = "Description: Card SecurityCode = Filling cardSecurityCode field out is mandatory.") @Size(max = 5, message = "Description: Card SecurityCode = Please, type up to a maximum of 5 characters.") String cardSecurityCode,
+			@NotNull(message = "Description: Card Limit = Filling cardLimit field out is mandatory.") @DecimalMax(value = "99999999999999999999", message = "Description: Card Limit = Please, type up to a maximum of 20 characters.") BigDecimal cardLimit,
+			@NotNull(message = "Description: Id of Card Type = Filling idtype field out is mandatory.") @Max(value = 6, message = "Description: Id of Card Type = Please, type only 1 character.") Type type) {
+		this.cardName = cardName;
+		this.cardFlag = cardFlag;
+		this.cardNumber = cardNumber;
+		this.cardSecurityCode = cardSecurityCode;
+		this.cardLimit = cardLimit;
+		this.type = type;
+	}
+
+	public CardsDto() {
+	}
+
+	
 	
 	
 

@@ -16,5 +16,14 @@ public class CardTypeDto {
 	public void setTypeOfCard(Type typeOfCard) {
 		this.typeOfCard = typeOfCard;
 	}
+
+	public CardTypeDto(@NotNull Type typeOfCard) {
+		this.typeOfCard = typeOfCard;
+	}
+
+	public CardTypeDto() {
+	}
+	
+	
 	
 }

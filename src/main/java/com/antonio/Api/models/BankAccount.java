@@ -91,6 +91,38 @@ public class BankAccount implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	public BankAccount(Long id, String nameOwner, String agencyCode, String accountCode, String registerId,
+			String verificationDigital, List<Cards> cards) {
+		super();
+		this.id = id;
+		this.nameOwner = nameOwner;
+		this.agencyCode = agencyCode;
+		this.accountCode = accountCode;
+		this.registerId = registerId;
+		this.verificationDigital = verificationDigital;
+		this.cards = cards;
+	}
+	public BankAccount() {
+	
+	}
+	public BankAccount(Long id, String nameOwner, String agencyCode, String accountCode, String registerId,
+			String verificationDigital) {
+		this.id = id;
+		this.nameOwner = nameOwner;
+		this.agencyCode = agencyCode;
+		this.accountCode = accountCode;
+		this.registerId = registerId;
+		this.verificationDigital = verificationDigital;
+	}
+	public BankAccount(String nameOwner, String agencyCode, String accountCode, String registerId,
+			String verificationDigital) {
+		this.nameOwner = nameOwner;
+		this.agencyCode = agencyCode;
+		this.accountCode = accountCode;
+		this.registerId = registerId;
+		this.verificationDigital = verificationDigital;
+	}
+	
 	
 	
 	

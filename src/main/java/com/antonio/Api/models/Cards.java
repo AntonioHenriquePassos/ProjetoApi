@@ -129,7 +129,36 @@ public class Cards implements Serializable {
 	public void setType(Type type) {
 		this.type = type;
 	}
-	
+
+	public Cards(Long id, CardName cardName, CardFlag cardFlag, String cardNumber, String cardSecurityCode,
+			BigDecimal cardLimit, CardType cardType, Type type, BankAccount bankAccount) {
+		this.id = id;
+		this.cardName = cardName;
+		this.cardFlag = cardFlag;
+		this.cardNumber = cardNumber;
+		this.cardSecurityCode = cardSecurityCode;
+		this.cardLimit = cardLimit;
+		this.cardType = cardType;
+		this.type = type;
+		this.bankAccount = bankAccount;
+	}
+
+	public Cards() {
+		
+	}
+
+	public Cards(CardName cardName, CardFlag cardFlag, String cardNumber, String cardSecurityCode, BigDecimal cardLimit,
+			CardType cardType, Type type, BankAccount bankAccount) {
+		super();
+		this.cardName = cardName;
+		this.cardFlag = cardFlag;
+		this.cardNumber = cardNumber;
+		this.cardSecurityCode = cardSecurityCode;
+		this.cardLimit = cardLimit;
+		this.cardType = cardType;
+		this.type = type;
+		this.bankAccount = bankAccount;
+	}
 	
 	
 	

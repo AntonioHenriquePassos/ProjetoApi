@@ -64,6 +64,25 @@ public class CardType implements Serializable {
 		this.id = id;
 	}
 
+	public CardType(Integer id, Type typeOfCard, List<Cards> cards) {
+		this.id = id;
+		this.typeOfCard = typeOfCard;
+		this.cards = cards;
+	}
+
+	public CardType() {
+		
+	}
+
+	public CardType(Integer id, Type typeOfCard) {
+		this.id = id;
+		this.typeOfCard = typeOfCard;
+	}
+
+	public CardType(Type typeOfCard) {
+		this.typeOfCard = typeOfCard;
+	}
+	
 	
 	
 	
