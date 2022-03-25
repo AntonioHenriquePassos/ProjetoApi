@@ -136,18 +136,18 @@ public class BankAccountService {
 	}
 	
 	public Cards findCardById(Long id){
-		return cardsRepository.findById(id).orElseThrow(
-				()-> new CardNotFoundException("Id not found, id: " + id));
+		Optional<Cards> cardFound = cardsRepository.findById(id);
+		return cardFound.orElseThrow(()-> new CardNotFoundException("Id not found, id: " + id));
 	}
 
 	public BankAccount findBankAccountId(Long id) {
-		return bankAccountRepository.findById(id).orElseThrow(
-				() -> new BankAccountNotFoundException("Id not found, id: " + id));
+		Optional <BankAccount> bankAccountFound = bankAccountRepository.findById(id);
+		return bankAccountFound.orElseThrow(() -> new BankAccountNotFoundException("Id not found, id: " + id));
 	}
 	
 	public CardType findCardTypeId(Integer id) {
-		return cardTypeRepository.findById(id).orElseThrow(
-				()-> new CardTypeNotFoundException("Id not found, id: " + id));
+		Optional<CardType> cardTypeFound = cardTypeRepository.findById(id);
+		return cardTypeFound.orElseThrow(()-> new CardTypeNotFoundException("Id not found, id: " + id));
 				
 	}
 
@@ -210,8 +210,8 @@ public class BankAccountService {
 	}
 	
 	@Transactional
-	public String deleteCard(Cards card) {
-		cardsRepository.delete(card);
+	public String deleteCardId(Long id) {
+		cardsRepository.deleteById(id);
 		return "Card deleted successfully.";
 	}
 	

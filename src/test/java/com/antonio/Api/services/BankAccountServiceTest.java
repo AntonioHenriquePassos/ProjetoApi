@@ -1,17 +1,21 @@
 package com.antonio.Api.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -29,6 +33,9 @@ import com.antonio.Api.models.Type;
 import com.antonio.Api.repositories.BankAccountRepository;
 import com.antonio.Api.repositories.CardTypeRepository;
 import com.antonio.Api.repositories.CardsRepository;
+import com.antonio.Api.services.exceptions.BankAccountNotFoundException;
+import com.antonio.Api.services.exceptions.CardNotFoundException;
+import com.antonio.Api.services.exceptions.CardTypeNotFoundException;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -51,6 +58,9 @@ class BankAccountServiceTest {
 	CardsDto dtoCard;
 	BankAccountDto dtoBankAccount;
 	Optional <Cards> cardOptional;
+	Optional <BankAccount> bankAccountOptional;
+	Optional <CardType> cardTypeOptional;
+
 	
 
 
@@ -90,127 +100,161 @@ class BankAccountServiceTest {
 		bankAccount.getCards().add(card);
 		
 		cardOptional = Optional.of(card);
-
+		bankAccountOptional = Optional.of(bankAccount);
+		cardTypeOptional = Optional.of(cardType);
 	
 		
 	}
 	
 
 	@Test
-	void testCreateBankAccount_ItMustSaveAnInstanceOfBankAccount() {
+	void testCreateBankAccount_MustSaveAnInstanceOfBankAccount() {
+		when(bankAccountRepository.save(any())).thenReturn(bankAccount);
+		BankAccount bankAccountCreated = bankAccountService.
+				createBankAccount(dtoBankAccount);
 		
-		//given
-		BankAccount bankAccount1 = new BankAccount();
-		bankAccount1 = bankAccount;
-		
-		//when
-		bankAccountService.createBankAccount(dtoBankAccount);
-		
-		//then
-		ArgumentCaptor<BankAccount> bankAccoutArgCaptor = 
-				ArgumentCaptor.forClass(BankAccount.class);
-		
-		verify(bankAccountRepository).save(bankAccoutArgCaptor.capture());
-		BankAccount capturedBankAccount = bankAccoutArgCaptor.getValue();
-		assertThat(capturedBankAccount.getClass()).isEqualTo(bankAccount1.getClass());
-		assertNotNull(capturedBankAccount);
-		
+		assertNotNull(bankAccountCreated);
+		assertEquals(BankAccount.class, bankAccountCreated.getClass());
+	
 	}
 		
 
 	@Test
-	void testCreateCardType_ItMustSaveAnInstanceOfBankAccount() {
-		//given
-		CardType cardtype1 = new CardType();
-		cardtype1 = cardType;
-		
-		//when
-		bankAccountService.createCardType(dtoCardType);
-		
-		//then
-		ArgumentCaptor<CardType>CardTypeArgCaptor = 
-				ArgumentCaptor.forClass(CardType.class);
-		
-		verify(cardTypeRepository).save(CardTypeArgCaptor.capture());
-		CardType capturedCardType = CardTypeArgCaptor.getValue();
-		assertThat(capturedCardType.getClass()).isEqualTo(cardtype1.getClass());
-		assertNotNull(capturedCardType);
+	void testCreateCardType_ItMustSaveAnInstanceOfCardType() {
+		when(cardTypeRepository.save(any())).thenReturn(cardType);
+		CardType cardTypeFound = bankAccountService.createCardType(dtoCardType);
+		assertNotNull(cardTypeFound);
+		assertEquals(CardType.class, cardTypeFound.getClass());
 		
 		
 	}
 
 	@Test
 	void testAddCardToBankAccount_ItMustSaveAnInstanceOfBankAccount() {
-		//given
-		BankAccount bankAccount1 = new BankAccount();
-		bankAccount1 = bankAccount;
+		when(bankAccountRepository.save(any())).thenReturn(bankAccount);
+		BankAccount bankAccountCreated = bankAccountService.
+				createBankAccount(dtoBankAccount);
 		
-		//when
-		bankAccountService.AddCardToBankAccount(dtoCard,bankAccount1);
+		assertNotNull(bankAccountCreated);
+		assertEquals(BankAccount.class, bankAccountCreated.getClass());
+	
+	}
 		
-		//then
-		ArgumentCaptor<BankAccount> bankAccoutArgCaptor = 
-				ArgumentCaptor.forClass(BankAccount.class);
+
+	@Test
+	void testFindAll_MustReturnAListOfBankAccount() {
+		when(bankAccountRepository.findAll()).thenReturn(List.of(bankAccount));
+		List <BankAccount> listFound = bankAccountService.findAll();
+		assertNotNull(listFound);
+		assertEquals(1,listFound.size());
+		assertEquals(BankAccount.class,listFound.get(0).getClass());
+
+	}
+ 
+	@Test
+	void testFindCardById_MustReturnOneCardsInstance() {
+		when(cardsRepository.findById(anyLong())).thenReturn(cardOptional);
+		Cards cardFound = bankAccountService.findCardById(card.getId());
+		assertNotNull(cardFound);
+		assertEquals(Cards.class,cardFound.getClass());
+				
+	}
+	
+	@Test
+	void testFindCardById_MustReturnAnObjectCardNotFoundException() {
+		when(cardsRepository.findById(anyLong()))
+		.thenThrow( new CardNotFoundException("Id not found, id: " + anyLong()));
+		try {
+			bankAccountService.findCardById(0L);
+		} catch(Exception ex) {
+			assertEquals( CardNotFoundException.class, ex.getClass());
+			assertThat(ex.getMessage()).isEqualTo("Id not found, id: 0");
+		}
+			
+		}
 		
-		verify(bankAccountRepository).save(bankAccoutArgCaptor.capture());
-		BankAccount capturedBankAccount = bankAccoutArgCaptor.getValue();
-		assertThat(capturedBankAccount.getClass()).isEqualTo(bankAccount1.getClass());
-		assertNotNull(capturedBankAccount);
+	
+	@Test
+	void testFindBankAccountId_MustReturnOneBankAccoutInstance() {
+		when(bankAccountRepository.findById(anyLong())).thenReturn(bankAccountOptional);
+		BankAccount bankAccountFound = bankAccountService.findBankAccountId(bankAccount.getId());
+		assertNotNull(bankAccountFound);
+		assertEquals(BankAccount.class,bankAccountFound.getClass());
+	}
+	
+	@Test
+	void testFindBankAccountId_MustReturnAnObjectBankAccountNotFoundException() {
+		when(bankAccountRepository.findById(anyLong()))
+		.thenThrow( new BankAccountNotFoundException("Id not found, id: " + anyLong()));
+		try {
+			bankAccountService.findBankAccountId(0L);
+		} catch(Exception ex) {
+			assertEquals( BankAccountNotFoundException.class, ex.getClass());
+			assertThat(ex.getMessage()).isEqualTo("Id not found, id: 0");
+		}
+			
+		}
+
+	@Test
+	void testFindCardTypeId_MustReturnOneCardTypeInstance() {
+		when(cardTypeRepository.findById(anyInt())).thenReturn(cardTypeOptional);
+		CardType cardTypeFound = bankAccountService.findCardTypeId(cardType.getId());
+		assertNotNull(cardTypeFound);
+		assertEquals(CardType.class,cardTypeFound.getClass());
+	}
+	
+	@Test
+	void testFindCardTypeId_MustReturnAnObjectCardTypeNotFoundException() {
+		when(cardTypeRepository.findById(anyInt()))
+		.thenThrow( new CardTypeNotFoundException("Id not found, id: " + anyInt()));
+		try {
+			bankAccountService.findCardTypeId(0);
+		} catch(Exception ex) {
+			assertEquals( CardTypeNotFoundException.class, ex.getClass());
+			assertThat(ex.getMessage()).isEqualTo("Id not found, id: 0");
+		}
+	}
+		
+
+	@Test
+	void testUpdateBankAccount__MustSaveAnInstanceOfBankAccount() {
+		when(bankAccountRepository.save(any())).thenReturn(bankAccount);
+		BankAccount bankAccountUpdated = bankAccountService
+			.updateBankAccount(bankAccount, dtoBankAccount);
+		
+		assertNotNull(bankAccountUpdated);
+		assertEquals(BankAccount.class, bankAccountUpdated.getClass());
+	
+	} 
+		
+
+	@Test
+	void testUpdateCard_ItMustSaveAnInstanceOfCard() {
+		when(cardsRepository.save(any())).thenReturn(card);
+		Cards cardUpdated = bankAccountService
+				.updateCard(card, dtoCard);
+		
+		assertNotNull(cardUpdated);
+		assertEquals(Cards.class, cardUpdated.getClass());
+	}
+
+	@Test
+	void testDeleteBankAccountId() {
+		bankAccountService.deleteBankAccountId(anyLong());
+		verify(bankAccountRepository).deleteById(anyLong());
 		
 	}
 
 	@Test
-	void cantGetAllBankAccounts_ItMustCheckIfRepositorysFuntionIsFindAll() {
-		//when
-		bankAccountService.findAll();
-		//then
-		verify(bankAccountRepository).findAll();
+	void testDeleteCard() {
+		bankAccountService.deleteCardId(anyLong());
+		verify(cardsRepository).deleteById(anyLong());
 	}
 
-//	@Test
-//	void testFindCardById_WhenFindByIdItMustReturnCardsInstance() {
-//		//given
-//		Cards savedCard = cardsRepository.save(card);
-//		//when
-//		Cards expected = bankAccountService.findCardById(savedCard.getId());
-//		
-//		assertThat(expected).isNotNull();
-//		
-//	}
-//
-//	@Test
-//	void testFindBankAccountId() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testFindCardTypeId() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testUpdateBankAccount() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testUpdateCard() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testDeleteBankAccountId() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testDeleteCard() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testDeleteCardTypeId() {
-//		fail("Not yet implemented");
-//	}
-//
+	@Test
+	void testDeleteCardTypeId() {
+		bankAccountService.deleteCardTypeId(anyInt());
+		verify(cardTypeRepository).deleteById(anyInt());
+	}
+
 }

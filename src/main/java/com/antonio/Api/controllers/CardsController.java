@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +47,14 @@ public class CardsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(bankAccountService.AddCardToBankAccount(dtoCard, bankAccountFound));
 	}
 	
+	@GetMapping("/card/{id}")
+	@ApiOperation(value="Retrieve a card by its id.")
+	public ResponseEntity<Object> findCardById(@PathVariable(value = "id") Long id){
+		Cards cardFound= bankAccountService.findCardById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(cardFound);
+
+	}
+	
 	
 	
 	@PutMapping("/updateCard/{id}")
@@ -61,8 +70,8 @@ public class CardsController {
 	@DeleteMapping("/deleteCard/{id}")
 	@ApiOperation(value="Delete a card, found by its id.")
 	public ResponseEntity<Object> deleteCardId(@PathVariable(value="id")Long id){
-		Cards card = bankAccountService.findCardById(id);
-		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.deleteCard(card));
+		bankAccountService.findCardById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.deleteCardId(id));
 	}
 
 }

@@ -44,8 +44,7 @@ public class BankAccountController {
 	@PostMapping
 	@ApiOperation(value="Create a bank account with cards or not.")
 	public ResponseEntity<Object> createBankAccount(@RequestBody @Valid BankAccountDto dto){
-		BankAccount newBankAccount = new BankAccount();
-		newBankAccount = bankAccountService.createBankAccount(dto);
+		BankAccount newBankAccount = bankAccountService.createBankAccount(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(newBankAccount);
 	}
 	
@@ -94,7 +93,7 @@ public class BankAccountController {
 	@DeleteMapping("/deleteBankAccount/{id}")
 	@ApiOperation(value="Delete a bank account, found by its id."
 			+ " The deletion accurs only if there are no cards related to the bank account.")
-	public ResponseEntity<Object> deleteBankAccountId(@PathVariable(value="id") Long id){
+	public ResponseEntity<Object> deleteBankAccount(@PathVariable(value="id") Long id){
 		BankAccount bankAccountFound = bankAccountService.findBankAccountId(id);
 		if (bankAccountFound.getCards().isEmpty()) {
 			bankAccountService.deleteBankAccountId(id);
