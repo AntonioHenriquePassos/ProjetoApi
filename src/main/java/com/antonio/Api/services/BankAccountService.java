@@ -94,7 +94,7 @@ public class BankAccountService {
 
  
 	@Transactional
-	public BankAccount AddCardToBankAccount(CardsDto cardDto, BankAccount foundBankAccount) {
+	public Cards AddCardToBankAccount(CardsDto cardDto, BankAccount foundBankAccount) {
 		BankAccount updatedBankAccount = new BankAccount();
 		updatedBankAccount = foundBankAccount;
 		Cards newCard = new Cards();
@@ -128,7 +128,7 @@ public class BankAccountService {
 		updatedBankAccount.getCards().add(newCard);
 		bankAccountRepository.save(updatedBankAccount);		
 		}
-		 return updatedBankAccount;
+		 return newCard;
 	}
 	
 	public List<BankAccount> findAll(){

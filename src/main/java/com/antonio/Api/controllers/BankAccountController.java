@@ -2,6 +2,7 @@ package com.antonio.Api.controllers;
 
 
 
+import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.antonio.Api.dtos.BankAccountDto;
 import com.antonio.Api.models.BankAccount;
@@ -43,24 +45,31 @@ public class BankAccountController {
 		
 	@PostMapping
 	@ApiOperation(value="Create a bank account with cards or not.")
-	public ResponseEntity<Object> createBankAccount(@RequestBody @Valid BankAccountDto dto){
+	public ResponseEntity<BankAccount> createBankAccount(@RequestBody @Valid BankAccountDto dto){
 		BankAccount newBankAccount = bankAccountService.createBankAccount(dto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(newBankAccount);
-	}
-	
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(newBankAccount.getId())
+				.toUri();
+		return ResponseEntity.created(uri).build();
 		
+	}
+			
 	
 	@GetMapping
 	@ApiOperation(value="Retrieve a list with all bank accounts containing their respective cards.")
-	public List<BankAccount> listAllBankAccountsWithCards(){
-		return bankAccountService.findAll();
+	public ResponseEntity<List<BankAccount>> listAllBankAccountsWithCards(){
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.findAll());
+
 	}
+	
 	
 	@GetMapping("/bankAccount/{id}")
 	@ApiOperation(value="Retrieve a bank acount by its id.")
-	public ResponseEntity<Object> findAccountById(@PathVariable(value = "id") Long id){
-		BankAccount bankAccount= bankAccountService.findBankAccountId(id);
-		return ResponseEntity.status(HttpStatus.OK).body(bankAccount);
+	public ResponseEntity<BankAccount> findAccountById(@PathVariable(value = "id") Long id){
+		BankAccount bankAccountFound= bankAccountService.findBankAccountId(id);
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountFound);
 
 	}
 	
@@ -69,7 +78,7 @@ public class BankAccountController {
 	@PutMapping("/updateBankAccount/{id}")
 	@ApiOperation(value="Update only the bank account information,"
 			+ " cards will be updated with their proper function.")
-	public ResponseEntity<Object> updateBankAccount(@PathVariable(value="id")Long id,
+	public ResponseEntity<BankAccount> updateBankAccount(@PathVariable(value="id")Long id,
 	@RequestBody @Valid BankAccountDto bankAccountDto){
 		BankAccount BankAccountFound = bankAccountService.findBankAccountId(id);
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
