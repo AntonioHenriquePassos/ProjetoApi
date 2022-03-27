@@ -59,7 +59,7 @@ public class CardsController {
 	}
 
 	@PutMapping("/updateCard/{id}")
-	@ApiOperation(value = "Update an existing card, found by its id.")
+	@ApiOperation(value = "Update an existing card, found by its id. An already instantiated Card Type must be informed.")
 	public ResponseEntity<Cards> updateCard(@PathVariable(value = "id") Long id, @RequestBody @Valid CardsDto cardDto) {
 		Cards cardFound = bankAccountService.findCardById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.updateCard(cardFound, cardDto));

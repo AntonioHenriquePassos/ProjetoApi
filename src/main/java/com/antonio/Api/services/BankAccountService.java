@@ -78,6 +78,7 @@ public class BankAccountService {
 
 			}
 		}
+		bankAccountRepository.save(newBankAccount);
 		return newBankAccount;
 
 	}
