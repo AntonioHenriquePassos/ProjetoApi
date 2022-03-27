@@ -1,7 +1,5 @@
 package com.antonio.Api.controllers;
 
-
-
 import java.net.URI;
 import java.util.List;
 
@@ -30,88 +28,66 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/bank")
-@Api(value="ProjetoApi")
-@CrossOrigin(origins="*")
+@Api(value = "ProjetoApi")
+@CrossOrigin(origins = "*")
 public class BankAccountController {
-	
+
 	public BankAccountService bankAccountService;
-		
-	
+
 	public BankAccountController(BankAccountService bankAccountService) {
-			this.bankAccountService = bankAccountService;
-		
-	}
-	
-		
-	@PostMapping
-	@ApiOperation(value="Create a bank account with cards or not.")
-	public ResponseEntity<BankAccount> createBankAccount(@RequestBody @Valid BankAccountDto dto){
-		BankAccount newBankAccount = bankAccountService.createBankAccount(dto);
-		URI uri = ServletUriComponentsBuilder
-				.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(newBankAccount.getId())
-				.toUri();
-		return ResponseEntity.created(uri).build();
-		
-	}
-			
-	
-	@GetMapping
-	@ApiOperation(value="Retrieve a list with all bank accounts containing their respective cards.")
-	public ResponseEntity<List<BankAccount>> listAllBankAccountsWithCards(){
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.findAll());
+		this.bankAccountService = bankAccountService;
 
 	}
-	
-	
+
+	@PostMapping
+	@ApiOperation(value = "Create a bank account with cards or not.")
+	public ResponseEntity<BankAccount> createBankAccount(@RequestBody @Valid BankAccountDto dto) {
+		BankAccount newBankAccount = bankAccountService.createBankAccount(dto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newBankAccount.getId())
+				.toUri();
+		return ResponseEntity.created(uri).build();
+
+	}
+
+	@GetMapping
+	@ApiOperation(value = "Retrieve a list with all bank accounts containing their respective cards.")
+	public ResponseEntity<List<BankAccount>> listAllBankAccountsWithCards() {
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.findAll());
+
+	}
+
 	@GetMapping("/bankAccount/{id}")
-	@ApiOperation(value="Retrieve a bank acount by its id.")
-	public ResponseEntity<BankAccount> findAccountById(@PathVariable(value = "id") Long id){
-		BankAccount bankAccountFound= bankAccountService.findBankAccountId(id);
+	@ApiOperation(value = "Retrieve a bank acount by its id.")
+	public ResponseEntity<BankAccount> findAccountById(@PathVariable(value = "id") Long id) {
+		BankAccount bankAccountFound = bankAccountService.findBankAccountId(id);
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccountFound);
 
 	}
-	
-	
-	
+
 	@PutMapping("/updateBankAccount/{id}")
-	@ApiOperation(value="Update only the bank account information,"
+	@ApiOperation(value = "Update only the bank account information,"
 			+ " cards will be updated with their proper function.")
-	public ResponseEntity<BankAccount> updateBankAccount(@PathVariable(value="id")Long id,
-	@RequestBody @Valid BankAccountDto bankAccountDto){
+	public ResponseEntity<BankAccount> updateBankAccount(@PathVariable(value = "id") Long id,
+			@RequestBody @Valid BankAccountDto bankAccountDto) {
 		BankAccount BankAccountFound = bankAccountService.findBankAccountId(id);
-		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
-				updateBankAccount(BankAccountFound, bankAccountDto));
-		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(bankAccountService.updateBankAccount(BankAccountFound, bankAccountDto));
+
 	}
-	
-	
-	
-//	//Must be used only in case of creation of ENUM "Type" which will replace an existing one.
-//	@PutMapping("/updateCardType/{id}")
-//	public ResponseEntity<Object> updateCardType(@PathVariable(value="id") Integer id, 
-//		@RequestBody @Valid CardTypeDto cardTypeDto ){
-//		CardType cardTypeFound = bankAccountService.findCardTypeId(id);
-//		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
-//				updateCardType(cardTypeFound, cardTypeDto));
-//	}
-		
-	
-	
+
 	@DeleteMapping("/deleteBankAccount/{id}")
-	@ApiOperation(value="Delete a bank account, found by its id."
+	@ApiOperation(value = "Delete a bank account, found by its id."
 			+ " The deletion accurs only if there are no cards related to the bank account.")
-	public ResponseEntity<Object> deleteBankAccount(@PathVariable(value="id") Long id){
+	public ResponseEntity<Object> deleteBankAccount(@PathVariable(value = "id") Long id) {
 		BankAccount bankAccountFound = bankAccountService.findBankAccountId(id);
 		if (bankAccountFound.getCards().isEmpty()) {
 			bankAccountService.deleteBankAccountId(id);
-	        return ResponseEntity.status(HttpStatus.OK).body("Bank Account deleted successfully.");
-		} else {			
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, cannot delete bank account with cards in it.");
+			return ResponseEntity.status(HttpStatus.OK).body("Bank Account deleted successfully.");
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body("Sorry, cannot delete bank account with cards in it.");
 		}
-		
-	} 
-	
+
+	}
 
 }

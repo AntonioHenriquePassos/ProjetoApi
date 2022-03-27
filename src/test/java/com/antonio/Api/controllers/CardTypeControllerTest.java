@@ -37,13 +37,13 @@ import com.antonio.Api.services.exceptions.CardTypeNotFoundException;
 
 @SpringBootTest
 class CardTypeControllerTest {
-	
+
 	@InjectMocks
 	private CardTypeController cardTypeController;
-	
+
 	@Mock
 	private BankAccountService bankAccountService;
-	
+
 	BankAccount bankAccount;
 
 	Cards card;
@@ -51,40 +51,37 @@ class CardTypeControllerTest {
 	CardTypeDto dtoCardType;
 	CardsDto dtoCard;
 	BankAccountDto dtoBankAccount;
-	Optional <Cards> cardOptional;
-	Optional <BankAccount> bankAccountOptional;
-	Optional <CardType> cardTypeOptional;
-	
-	private void startModels() {
-		
-		dtoCardType= new CardTypeDto(Type.GIFT_CARD);
-		dtoCard = new CardsDto(CardName.PRIME,CardFlag.MASTERCARD,"07","513", 
-		BigDecimal.valueOf(100.00), Type.GIFT_CARD);
-		dtoBankAccount = new BankAccountDto("Maria","001","123","555",
-		"1");
-		dtoBankAccount.getCards().add(dtoCard);
-		
-		
-		//Models receive the DTOs
-		bankAccount = new BankAccount(1L,dtoBankAccount.getNameOwner(), 
-		dtoBankAccount.getAgencyCode(), dtoBankAccount.getAccountCode(),
-		dtoBankAccount.getRegisterId(),dtoBankAccount.getVerificationDigital());
-		
-		cardType = new CardType(1,dtoCardType.getTypeOfCard());
+	Optional<Cards> cardOptional;
+	Optional<BankAccount> bankAccountOptional;
+	Optional<CardType> cardTypeOptional;
 
-		card = new Cards(1L, dtoCard.getCardName(), dtoCard.getCardFlag(),
-		dtoCard.getCardNumber(),dtoCard.getCardSecurityCode(), dtoCard.getCardLimit(), 
-		cardType, dtoCard.getType(),  bankAccount);
-		
+	private void startModels() {
+
+		dtoCardType = new CardTypeDto(Type.GIFT_CARD);
+		dtoCard = new CardsDto(CardName.PRIME, CardFlag.MASTERCARD, "07", "513", BigDecimal.valueOf(100.00),
+				Type.GIFT_CARD);
+		dtoBankAccount = new BankAccountDto("Maria", "001", "123", "555", "1");
+		dtoBankAccount.getCards().add(dtoCard);
+
+		// Models receive the DTOs
+		bankAccount = new BankAccount(1L, dtoBankAccount.getNameOwner(), dtoBankAccount.getAgencyCode(),
+				dtoBankAccount.getAccountCode(), dtoBankAccount.getRegisterId(),
+				dtoBankAccount.getVerificationDigital());
+
+		cardType = new CardType(1, dtoCardType.getTypeOfCard());
+
+		card = new Cards(1L, dtoCard.getCardName(), dtoCard.getCardFlag(), dtoCard.getCardNumber(),
+				dtoCard.getCardSecurityCode(), dtoCard.getCardLimit(), cardType, dtoCard.getType(), bankAccount);
+
 		cardType.getCard().add(card);
 		bankAccount.getCards().add(card);
-		
+
 		cardOptional = Optional.of(card);
 		bankAccountOptional = Optional.of(bankAccount);
 		cardTypeOptional = Optional.of(cardType);
-		
+
 	}
-	
+
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -96,90 +93,85 @@ class CardTypeControllerTest {
 	@Test
 	void testCreateCardType_MustReturnOneCardTypeInstance() {
 		when(bankAccountService.createCardType(any())).thenReturn(cardType);
-		ResponseEntity<CardType> cardTypeResponse= cardTypeController.createCardType(dtoCardType);
-		
+		ResponseEntity<CardType> cardTypeResponse = cardTypeController.createCardType(dtoCardType);
+
 		assertNotNull(cardTypeResponse);
 		assertNotNull(cardTypeResponse.getHeaders().get("Location"));
 		assertEquals(ResponseEntity.class, cardTypeResponse.getClass());
 		assertEquals(HttpStatus.CREATED, cardTypeResponse.getStatusCode());
-		
+
 	}
 
 	@Test
 	void testFindCardTypeById_MustReturnOneCardTypeInstance() {
 		when(bankAccountService.findCardTypeId(anyInt())).thenReturn(cardType);
-		
+
 		ResponseEntity<CardType> cardTypeResponse = cardTypeController.findCardTypeById(anyInt());
-		
+
 		assertNotNull(cardTypeResponse);
 		assertNotNull(cardTypeResponse.getBody());
 		assertEquals(ResponseEntity.class, cardTypeResponse.getClass());
 		assertEquals(CardType.class, cardTypeResponse.getBody().getClass());
 		assertEquals(HttpStatus.OK, cardTypeResponse.getStatusCode());
-		assertEquals(cardType.getId(), (cardTypeResponse.getBody()).getId());	
-		
+		assertEquals(cardType.getId(), (cardTypeResponse.getBody()).getId());
+
 	}
-	
+
 	@Test
 	void testFindCardTypeById_MustReturnCardTypeNotFoundException() {
 		when(bankAccountService.findCardTypeId(anyInt()))
-		.thenThrow(new CardTypeNotFoundException("Id not found, id: " + anyLong()));
-		
+				.thenThrow(new CardTypeNotFoundException("Id not found, id: " + anyLong()));
+
 		try {
 			cardTypeController.findCardTypeById(0);
-		} catch(Exception ex) {
-			assertEquals( CardTypeNotFoundException.class, ex.getClass());
+		} catch (Exception ex) {
+			assertEquals(CardTypeNotFoundException.class, ex.getClass());
 			assertThat(ex.getMessage()).isEqualTo("Id not found, id: 0");
-		}	
-		
+		}
+
 	}
 
 	@Test
 	void testDeleteCardTypeId_MustReturnStatusOK() {
 		cardType.getCard().remove(0);
-		when(bankAccountService.findCardTypeId(anyInt()))
-		.thenReturn(cardType);
+		when(bankAccountService.findCardTypeId(anyInt())).thenReturn(cardType);
 		doNothing().when(bankAccountService).deleteCardTypeId(anyInt());
-		
-		ResponseEntity<Object> cardTypeResponse = cardTypeController
-				.deleteCardTypeId(anyInt());
-				
-		
+
+		ResponseEntity<Object> cardTypeResponse = cardTypeController.deleteCardTypeId(anyInt());
+
 		assertNotNull(cardTypeResponse);
 		assertEquals(ResponseEntity.class, cardTypeResponse.getClass());
 		assertEquals(HttpStatus.OK, cardTypeResponse.getStatusCode());
-		verify(bankAccountService,times(1)).deleteCardTypeId(anyInt());
+		verify(bankAccountService, times(1)).deleteCardTypeId(anyInt());
 	}
+
 	@Test
 	void testDeleteCardTypeId__MustReturnStatusFORBIDDEN() {
 		bankAccount.getCards().add(card);
-		when(bankAccountService.findCardTypeId(anyInt()))
-		.thenReturn(cardType);
+		when(bankAccountService.findCardTypeId(anyInt())).thenReturn(cardType);
 		doNothing().when(bankAccountService).deleteCardTypeId(anyInt());
-		
-		ResponseEntity<Object> cardTypeResponse = cardTypeController
-				.deleteCardTypeId(anyInt());
-		
+
+		ResponseEntity<Object> cardTypeResponse = cardTypeController.deleteCardTypeId(anyInt());
+
 		assertNotNull(cardTypeResponse);
 		assertEquals(ResponseEntity.class, cardTypeResponse.getClass());
 		assertEquals(HttpStatus.FORBIDDEN, cardTypeResponse.getStatusCode());
 	}
-	
+
 	@Test
 	void testDeleteCardTypeId_MustReturnCardTypeNotFoundException() {
-		
+
 		when(bankAccountService.findCardTypeId(anyInt()))
-		.thenThrow(new CardTypeNotFoundException("Id not found, id: " + anyLong()));
-		
+				.thenThrow(new CardTypeNotFoundException("Id not found, id: " + anyLong()));
+
 		try {
-			cardTypeController.deleteCardTypeId(0);		
-			
-		} catch(Exception ex) {
-			assertEquals( CardTypeNotFoundException.class, ex.getClass());
+			cardTypeController.deleteCardTypeId(0);
+
+		} catch (Exception ex) {
+			assertEquals(CardTypeNotFoundException.class, ex.getClass());
 			assertThat(ex.getMessage()).isEqualTo("Id not found, id: 0");
-		}	
-		
+		}
+
 	}
 
 }
-

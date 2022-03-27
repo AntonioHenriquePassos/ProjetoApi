@@ -3,35 +3,32 @@ package com.antonio.Api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
-
 public class BankAccountDto {
-	
-	@NotBlank(message="Description: Name Owner = Filling nameOwner field out is mandatory.")
-	@Size(max=50, message="Description: Name Owner = Please, type up to a maximum of 50 characters.")
+
+	@NotBlank(message = "Description: Name Owner = Filling nameOwner field out is mandatory.")
+	@Size(max = 50, message = "Description: Name Owner = Please, type up to a maximum of 50 characters.")
 	private String nameOwner;
-	
-	@NotBlank(message="Description: Agency Code = Filling agencyCode field out is mandatory.")
-	@Size(max=4, message="Description: Agency Code = Please, type up to a maximum of 4 characters.")
+
+	@NotBlank(message = "Description: Agency Code = Filling agencyCode field out is mandatory.")
+	@Size(max = 4, message = "Description: Agency Code = Please, type up to a maximum of 4 characters.")
 	private String agencyCode;
-	
-	@NotBlank(message="Description: Account Code = Filling accountCode field out is mandatory.")
-	@Size(max=8, message="Description: Account Code = Please, type up to a maximum of 8 characters.")
+
+	@NotBlank(message = "Description: Account Code = Filling accountCode field out is mandatory.")
+	@Size(max = 8, message = "Description: Account Code = Please, type up to a maximum of 8 characters.")
 	private String accountCode;
-	
-	@NotBlank(message="Description: Register Id = Filling registerId field out is mandatory.")
-	@Size(max=20, message="Description: Register Id = Please, type up to a maximum of 20 characters.")
+
+	@NotBlank(message = "Description: Register Id = Filling registerId field out is mandatory.")
+	@Size(max = 20, message = "Description: Register Id = Please, type up to a maximum of 20 characters.")
 	private String registerId;
-	
-	@NotBlank(message="Description: Verification Digital = Filling verificationDigital field out is mandatory.")
-	@Size(max=1, message="Description: Verification Digital = Please, type only 1 character.")
+
+	@NotBlank(message = "Description: Verification Digital = Filling verificationDigital field out is mandatory.")
+	@Size(max = 1, message = "Description: Verification Digital = Please, type only 1 character.")
 	private String verificationDigital;
-	
+
 	public List<@Valid CardsDto> cards = new ArrayList<>();
 
 	public String getNameOwner() {
@@ -97,7 +94,7 @@ public class BankAccountDto {
 		this.cards = cards;
 	}
 
-	//Constructor without Cards
+	// Constructor without Cards
 	public BankAccountDto(
 			@NotBlank(message = "Description: Name Owner = Filling nameOwner field out is mandatory.") @Size(max = 50, message = "Description: Name Owner = Please, type up to a maximum of 50 characters.") String nameOwner,
 			@NotBlank(message = "Description: Agency Code = Filling agencyCode field out is mandatory.") @Size(max = 4, message = "Description: Agency Code = Please, type up to a maximum of 4 characters.") String agencyCode,
@@ -114,7 +111,4 @@ public class BankAccountDto {
 	public BankAccountDto() {
 	}
 
-	
-	
-	
 }

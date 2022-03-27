@@ -13,7 +13,6 @@ import com.antonio.Api.dtos.CardsDto;
 import com.antonio.Api.models.BankAccount;
 import com.antonio.Api.models.CardType;
 import com.antonio.Api.models.Cards;
-import com.antonio.Api.models.Type;
 import com.antonio.Api.repositories.BankAccountRepository;
 import com.antonio.Api.repositories.CardTypeRepository;
 import com.antonio.Api.repositories.CardsRepository;
@@ -23,29 +22,29 @@ import com.antonio.Api.services.exceptions.CardTypeNotFoundException;
 
 @Service
 public class BankAccountService {
-	
+
 	final CardsRepository cardsRepository;
 	final CardTypeRepository cardTypeRepository;
 	final BankAccountRepository bankAccountRepository;
-	
-	public BankAccountService (CardsRepository cardsRepository, 
-	CardTypeRepository cardTypeRepository, BankAccountRepository bankAccountRepository ) {
-		
-		this.cardsRepository=cardsRepository;
-		this.cardTypeRepository=cardTypeRepository;
-		this.bankAccountRepository=bankAccountRepository;
+
+	public BankAccountService(CardsRepository cardsRepository, CardTypeRepository cardTypeRepository,
+			BankAccountRepository bankAccountRepository) {
+
+		this.cardsRepository = cardsRepository;
+		this.cardTypeRepository = cardTypeRepository;
+		this.bankAccountRepository = bankAccountRepository;
 	}
-	
+
 	@Transactional
-	public BankAccount createBankAccount (BankAccountDto dto) {
+	public BankAccount createBankAccount(BankAccountDto dto) {
 		BankAccount newBankAccount = new BankAccount();
 		newBankAccount.setAccountCode(dto.getAccountCode());
 		newBankAccount.setAgencyCode(dto.getAgencyCode());
 		newBankAccount.setNameOwner(dto.getNameOwner());
 		newBankAccount.setRegisterId(dto.getRegisterId());
 		newBankAccount.setVerificationDigital(dto.getVerificationDigital());
-		
-		for(CardsDto cardDto:dto.getCards()) {
+
+		for (CardsDto cardDto : dto.getCards()) {
 			Cards newCard = new Cards();
 			newCard.setCardFlag(cardDto.getCardFlag());
 			newCard.setCardLimit(cardDto.getCardLimit());
@@ -54,7 +53,7 @@ public class BankAccountService {
 			newCard.setCardSecurityCode(cardDto.getCardSecurityCode());
 			newCard.setBankAccount(newBankAccount);
 			Optional<CardType> cardTypeOptional = cardTypeRepository.findByTypeOfCard(cardDto.getType());
-			if(cardTypeOptional.isEmpty()) {
+			if (cardTypeOptional.isEmpty()) {
 				CardType cardType = new CardType();
 				cardType.setTypeOfCard(cardDto.getType());
 				cardType.getCard().add(newCard);
@@ -64,9 +63,9 @@ public class BankAccountService {
 				cardTypeRepository.save(cardType);
 				newBankAccount.getCards().add(newCard);
 				bankAccountRepository.save(newBankAccount);
-				
+
 			} else {
-			
+
 				CardType cardType = new CardType();
 				cardType = cardTypeOptional.get();
 				cardType.getCard().add(newCard);
@@ -76,15 +75,13 @@ public class BankAccountService {
 				cardTypeRepository.save(cardType);
 				newBankAccount.getCards().add(newCard);
 				bankAccountRepository.save(newBankAccount);
-				
 
-		}
+			}
 		}
 		return newBankAccount;
-		
-		
-	}	 
-	
+
+	}
+
 	@Transactional
 	public CardType createCardType(CardTypeDto cardTypeDto) {
 		CardType cardType = new CardType();
@@ -92,7 +89,6 @@ public class BankAccountService {
 		return cardTypeRepository.save(cardType);
 	}
 
- 
 	@Transactional
 	public Cards AddCardToBankAccount(CardsDto cardDto, BankAccount foundBankAccount) {
 		BankAccount updatedBankAccount = new BankAccount();
@@ -105,7 +101,7 @@ public class BankAccountService {
 		newCard.setCardSecurityCode(cardDto.getCardSecurityCode());
 		newCard.setBankAccount(updatedBankAccount);
 		Optional<CardType> cardTypeOptional = cardTypeRepository.findByTypeOfCard(cardDto.getType());
-		if(cardTypeOptional.isEmpty()) {
+		if (cardTypeOptional.isEmpty()) {
 			CardType cardType = new CardType();
 			cardType.setTypeOfCard(cardDto.getType());
 			cardType.getCard().add(newCard);
@@ -115,44 +111,43 @@ public class BankAccountService {
 			cardTypeRepository.save(cardType);
 			updatedBankAccount.getCards().add(newCard);
 			bankAccountRepository.save(updatedBankAccount);
-			
+
 		} else {
-		
-		CardType cardType = new CardType();
-		cardType = cardTypeOptional.get();
-		cardType.getCard().add(newCard);
-		newCard.setCardType(cardType);
-		newCard.setType(cardType.getTypeOfCard());
-		cardsRepository.save(newCard);
-		cardTypeRepository.save(cardType);
-		updatedBankAccount.getCards().add(newCard);
-		bankAccountRepository.save(updatedBankAccount);		
+
+			CardType cardType = new CardType();
+			cardType = cardTypeOptional.get();
+			cardType.getCard().add(newCard);
+			newCard.setCardType(cardType);
+			newCard.setType(cardType.getTypeOfCard());
+			cardsRepository.save(newCard);
+			cardTypeRepository.save(cardType);
+			updatedBankAccount.getCards().add(newCard);
+			bankAccountRepository.save(updatedBankAccount);
 		}
-		 return newCard;
+		return newCard;
 	}
-	
-	public List<BankAccount> findAll(){
+
+	public List<BankAccount> findAll() {
 		return bankAccountRepository.findAll();
 	}
-	
-	public Cards findCardById(Long id){
+
+	public Cards findCardById(Long id) {
 		Optional<Cards> cardFound = cardsRepository.findById(id);
-		return cardFound.orElseThrow(()-> new CardNotFoundException("Id not found, id: " + id));
+		return cardFound.orElseThrow(() -> new CardNotFoundException("Id not found, id: " + id));
 	}
 
 	public BankAccount findBankAccountId(Long id) {
-		Optional <BankAccount> bankAccountFound = bankAccountRepository.findById(id);
+		Optional<BankAccount> bankAccountFound = bankAccountRepository.findById(id);
 		return bankAccountFound.orElseThrow(() -> new BankAccountNotFoundException("Id not found, id: " + id));
 	}
-	
+
 	public CardType findCardTypeId(Integer id) {
 		Optional<CardType> cardTypeFound = cardTypeRepository.findById(id);
-		return cardTypeFound.orElseThrow(()-> new CardTypeNotFoundException("Id not found, id: " + id));
-				
+		return cardTypeFound.orElseThrow(() -> new CardTypeNotFoundException("Id not found, id: " + id));
+
 	}
 
-	
-	public BankAccount updateBankAccount (BankAccount foundBankAccount, BankAccountDto dto) {
+	public BankAccount updateBankAccount(BankAccount foundBankAccount, BankAccountDto dto) {
 		BankAccount updatedBankAccount = new BankAccount();
 		updatedBankAccount.setAccountCode(dto.getAccountCode());
 		updatedBankAccount.setAgencyCode(dto.getAgencyCode());
@@ -161,9 +156,9 @@ public class BankAccountService {
 		updatedBankAccount.setVerificationDigital(dto.getVerificationDigital());
 		updatedBankAccount.setId(foundBankAccount.getId());
 		updatedBankAccount.setCards(foundBankAccount.getCards());
-		return bankAccountRepository.save(updatedBankAccount);			
+		return bankAccountRepository.save(updatedBankAccount);
 	}
-	
+
 	public Cards updateCard(Cards cardFound, CardsDto cardDto) {
 		Cards newCard = new Cards();
 		newCard.setCardFlag(cardDto.getCardFlag());
@@ -173,55 +168,41 @@ public class BankAccountService {
 		newCard.setCardSecurityCode(cardDto.getCardSecurityCode());
 		newCard.setBankAccount(cardFound.getBankAccount());
 		newCard.setId(cardFound.getId());
-		
-		if(cardDto.getType()== cardFound.getType()) {
+
+		if (cardDto.getType() == cardFound.getType()) {
 			newCard.setCardType(cardFound.getCardType());
 			newCard.setType(cardFound.getCardType().getTypeOfCard());
 			cardsRepository.save(newCard);
 			return newCard;
 
 		} else {
-		
-		CardType cardTypeFound = cardTypeRepository.findByTypeOfCard(cardDto.getType()).get();
-		newCard.setCardType(cardTypeFound);
-		newCard.setType(cardTypeFound.getTypeOfCard());
-		cardsRepository.save(newCard);
-		cardTypeFound.getCard().add(newCard);
-		cardTypeRepository.save(cardTypeFound);
-		return newCard;
+
+			CardType cardTypeFound = cardTypeRepository.findByTypeOfCard(cardDto.getType()).get();
+			newCard.setCardType(cardTypeFound);
+			newCard.setType(cardTypeFound.getTypeOfCard());
+			cardsRepository.save(newCard);
+			cardTypeFound.getCard().add(newCard);
+			cardTypeRepository.save(cardTypeFound);
+			return newCard;
 		}
 	}
-	
-	
-//	public CardType updateCardType(CardType foundCardType, CardTypeDto dtoCardType ) {
-//		CardType updatedCardType = new CardType();
-//		updatedCardType.setId(foundCardType.getId());
-//		updatedCardType.setCard(foundCardType.getCard());
-//		updatedCardType.setTypeOfCard(dtoCardType.getTypeOfCard());
-//		cardTypeRepository.save(updatedCardType);
-//		return cardTypeRepository.findById(updatedCardType.getId()).get();
-//	}
 
-	
 	@Transactional
 	public void deleteBankAccountId(Long id) {
 		bankAccountRepository.deleteById(id);
-		
+
 	}
-	
+
 	@Transactional
 	public String deleteCardId(Long id) {
 		cardsRepository.deleteById(id);
 		return "Card deleted successfully.";
 	}
-	
+
 	@Transactional
 	public void deleteCardTypeId(Integer id) {
 		cardTypeRepository.deleteById(id);
-		
+
 	}
 
-	
-	
-	
 }

@@ -15,31 +15,30 @@ import com.antonio.Api.models.CardName;
 import com.antonio.Api.models.Type;
 
 public class CardsDto {
-	
-	@NotNull(message="Description: Card Name = Filling cardName field out is mandatory.")
+
+	@NotNull(message = "Description: Card Name = Filling cardName field out is mandatory.")
 	@Enumerated(EnumType.STRING)
 	private CardName cardName;
-	
-	@NotNull(message="Description: Card Flag = Filling cardFlag field out is mandatory.")
+
+	@NotNull(message = "Description: Card Flag = Filling cardFlag field out is mandatory.")
 	@Enumerated(EnumType.STRING)
 	private CardFlag cardFlag;
-	
-	@NotBlank(message="Description: Card Number = Filling cardNumber field out is mandatory.")
-	@Size(max=20, message="Description: Card Number = Please, type up to a maximum of 20 characters.")
+
+	@NotBlank(message = "Description: Card Number = Filling cardNumber field out is mandatory.")
+	@Size(max = 20, message = "Description: Card Number = Please, type up to a maximum of 20 characters.")
 	private String cardNumber;
-	
-	@NotBlank (message="Description: Card SecurityCode = Filling cardSecurityCode field out is mandatory.")
-	@Size(max=5, message="Description: Card SecurityCode = Please, type up to a maximum of 5 characters.")
+
+	@NotBlank(message = "Description: Card SecurityCode = Filling cardSecurityCode field out is mandatory.")
+	@Size(max = 5, message = "Description: Card SecurityCode = Please, type up to a maximum of 5 characters.")
 	private String cardSecurityCode;
-	
-	@NotNull(message="Description: Card Limit = Filling cardLimit field out is mandatory.")
+
+	@NotNull(message = "Description: Card Limit = Filling cardLimit field out is mandatory.")
 	@DecimalMax(value = "99999999999999999999", message = "Description: Card Limit = Please, type up to a maximum of 20 characters.")
 	private BigDecimal cardLimit;
-	
-	@NotNull(message="Description: Id of Card Type = Filling idtype field out is mandatory.")
-	private Type type; 
-	
-		
+
+	@NotNull(message = "Description: Id of Card Type = Filling idtype field out is mandatory.")
+	private Type type;
+
 	public CardName getCardName() {
 		return cardName;
 	}
@@ -79,7 +78,7 @@ public class CardsDto {
 	public void setCardLimit(BigDecimal cardLimit) {
 		this.cardLimit = cardLimit;
 	}
-	
+
 	public Type getType() {
 		return type;
 	}
@@ -87,7 +86,6 @@ public class CardsDto {
 	public void setType(Type type) {
 		this.type = type;
 	}
-
 
 	public CardsDto(
 			@NotNull(message = "Description: Card Name = Filling cardName field out is mandatory.") CardName cardName,
@@ -106,11 +104,5 @@ public class CardsDto {
 
 	public CardsDto() {
 	}
-
-	
-	
-	
-
-	
 
 }

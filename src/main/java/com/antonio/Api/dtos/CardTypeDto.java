@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import com.antonio.Api.models.Type;
 
 public class CardTypeDto {
-	
+
 	@NotNull
 	private Type typeOfCard;
 
@@ -23,7 +23,5 @@ public class CardTypeDto {
 
 	public CardTypeDto() {
 	}
-	
-	
-	
+
 }

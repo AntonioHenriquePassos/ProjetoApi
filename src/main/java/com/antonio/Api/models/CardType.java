@@ -1,10 +1,8 @@
 package com.antonio.Api.models;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,22 +19,22 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name="TB_CARD_TYPE")
+@Table(name = "TB_CARD_TYPE")
 public class CardType implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id; 
-	
-	@Column (unique=true)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@Column(unique = true)
 	@Enumerated(EnumType.STRING)
 	private Type typeOfCard;
 
-	@OneToMany ( mappedBy="cardType", orphanRemoval = true, cascade=CascadeType.PERSIST)
+	@OneToMany(mappedBy = "cardType", orphanRemoval = true, cascade = CascadeType.PERSIST)
 	@JsonManagedReference
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY )
-	private List <Cards> cards = new ArrayList<>();
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private List<Cards> cards = new ArrayList<>();
 
 	public List<Cards> getCard() {
 		return cards;
@@ -54,8 +52,6 @@ public class CardType implements Serializable {
 		this.typeOfCard = typeOfCard;
 	}
 
-	
-
 	public Integer getId() {
 		return id;
 	}
@@ -71,7 +67,7 @@ public class CardType implements Serializable {
 	}
 
 	public CardType() {
-		
+
 	}
 
 	public CardType(Integer id, Type typeOfCard) {
@@ -82,8 +78,5 @@ public class CardType implements Serializable {
 	public CardType(Type typeOfCard) {
 		this.typeOfCard = typeOfCard;
 	}
-	
-	
-	
-	
+
 }

@@ -27,58 +27,47 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/bank")
-@Api(value="ProjetoApi")
-@CrossOrigin(origins="*")
+@Api(value = "ProjetoApi")
+@CrossOrigin(origins = "*")
 public class CardsController {
-	
+
 	public BankAccountService bankAccountService;
-		
-	
+
 	public CardsController(BankAccountService bankAccountService) {
-			this.bankAccountService = bankAccountService;
-			
+		this.bankAccountService = bankAccountService;
+
 	}
-	
-	
+
 	@PostMapping("/card/{id}")
-	@ApiOperation(value="Create a card which must be added to a bank account. "
+	@ApiOperation(value = "Create a card which must be added to a bank account. "
 			+ " The \"id\" references the Bank AccountÂ´s id to which the card will be added.")
-	public ResponseEntity<Cards> createCard(@PathVariable (value="id") Long id, 
-		@RequestBody @Valid CardsDto dtoCard){
+	public ResponseEntity<Cards> createCard(@PathVariable(value = "id") Long id, @RequestBody @Valid CardsDto dtoCard) {
 		BankAccount bankAccountFound = bankAccountService.findBankAccountId(id);
 		Cards newCard = bankAccountService.AddCardToBankAccount(dtoCard, bankAccountFound);
-		URI uri = ServletUriComponentsBuilder
-				.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(newCard.getId())
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newCard.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
-		
+
 	}
-	
+
 	@GetMapping("/card/{id}")
-	@ApiOperation(value="Retrieve a card by its id.")
-	public ResponseEntity<Cards> findCardById(@PathVariable(value = "id") Long id){
-		Cards cardFound= bankAccountService.findCardById(id);
+	@ApiOperation(value = "Retrieve a card by its id.")
+	public ResponseEntity<Cards> findCardById(@PathVariable(value = "id") Long id) {
+		Cards cardFound = bankAccountService.findCardById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(cardFound);
 
 	}
-	
-	
-	
+
 	@PutMapping("/updateCard/{id}")
-	@ApiOperation(value="Update an existing card, found by its id.")
-	public ResponseEntity<Cards> updateCard(@PathVariable(value="id") Long id, 
-		@RequestBody @Valid CardsDto cardDto ){
+	@ApiOperation(value = "Update an existing card, found by its id.")
+	public ResponseEntity<Cards> updateCard(@PathVariable(value = "id") Long id, @RequestBody @Valid CardsDto cardDto) {
 		Cards cardFound = bankAccountService.findCardById(id);
-		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.
-				updateCard(cardFound, cardDto));
+		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.updateCard(cardFound, cardDto));
 	}
 
-		
 	@DeleteMapping("/deleteCard/{id}")
-	@ApiOperation(value="Delete a card, found by its id.")
-	public ResponseEntity<Object> deleteCardId(@PathVariable(value="id")Long id){
+	@ApiOperation(value = "Delete a card, found by its id.")
+	public ResponseEntity<Object> deleteCardId(@PathVariable(value = "id") Long id) {
 		bankAccountService.findCardById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.deleteCardId(id));
 	}
